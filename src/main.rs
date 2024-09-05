@@ -5,6 +5,21 @@ use std::path::{Path, PathBuf};
 use webp::Encoder;
 use arboard::Clipboard;
 
+// もし使う場合はここから下を修正
+
+// 定数の定義
+const DEFAULT_WIDTH: u32 = 640;
+const DEFAULT_HEIGHT: u32 = 480;
+const DOWNLOADS_DIR: &str = "Downloads";
+const WEBP_QUALITY: f32 = 65.0;
+
+// GitHub用のURLフォーマットを生成する関数
+fn generate_github_url(image_name: &str, width: &str, height: &str) -> String {
+    format!("![{name}](https://raw.githubusercontent.com/shunkat/image-resize-convert-uploader/master/{width}_{height}/{name}.webp)", name = image_name, width = width, height = height)
+}
+
+
+// ここまで修正
 
 fn main() -> io::Result<()> {
     let newest_image = get_newest_image()?;
@@ -16,14 +31,15 @@ fn main() -> io::Result<()> {
         let (new_name, width, height) = get_user_input(&image_path);
 
         let resized_image = resize_image(&image_path, width, height)?;
-        let webp_image = convert_to_webp(&resized_image, width, height)?;
-        let final_image = rename_image(&webp_image, &new_name)?;
+        convert_to_webp(&resized_image, width, height)?;
+    
+
 
         // `resized_image.png` を削除
         fs::remove_file(resized_image)?;
 
         // クリップボードに GitHub 用のリンク形式をコピー
-        let github_link = format!("![{}](https://github.com/{})", new_name, final_image.file_name().unwrap().to_str().unwrap());
+        let github_link = generate_github_url(&new_name, &width.to_string(), &height.to_string());
         copy_to_clipboard(&github_link)?;
     } else {
         println!("ダウンロードフォルダに画像が見つかりませんでした。");
@@ -32,10 +48,9 @@ fn main() -> io::Result<()> {
     Ok(())
 }
 
-
 fn get_newest_image() -> io::Result<Option<PathBuf>> {
     let home = env::var("HOME").expect("HOMEディレクトリの取得に失敗しました");
-    let downloads_path = PathBuf::from(home).join("Downloads");
+    let downloads_path = PathBuf::from(home).join(DOWNLOADS_DIR); // 定数を使用
 
     let entries = fs::read_dir(downloads_path)?;
 
@@ -61,8 +76,6 @@ fn get_newest_image() -> io::Result<Option<PathBuf>> {
 
 fn get_user_input(image_path: &Path) -> (String, u32, u32) {
     let default_name = image_path.file_stem().unwrap().to_str().unwrap().to_string();
-    let default_width = 640;
-    let default_height = 480;
 
     print!("新しい画像名を入力してください（デフォルト: {}）: ", default_name);
     io::stdout().flush().unwrap();
@@ -71,17 +84,17 @@ fn get_user_input(image_path: &Path) -> (String, u32, u32) {
     let new_name = new_name.trim().to_string();
     let new_name = if new_name.is_empty() { default_name } else { new_name };
 
-    print!("画像の幅を入力してください（デフォルト: {}）: ", default_width);
+    print!("画像の幅を入力してください（デフォルト: {}）: ", DEFAULT_WIDTH); // 定数を使用
     io::stdout().flush().unwrap();
     let mut width = String::new();
     io::stdin().read_line(&mut width).unwrap();
-    let width: u32 = width.trim().parse().unwrap_or(default_width);
+    let width: u32 = width.trim().parse().unwrap_or(DEFAULT_WIDTH); // 定数を使用
 
-    print!("画像の高さを入力してください（デフォルト: {}）: ", default_height);
+    print!("画像の高さを入力してください（デフォルト: {}）: ", DEFAULT_HEIGHT); // 定数を使用
     io::stdout().flush().unwrap();
     let mut height = String::new();
     io::stdin().read_line(&mut height).unwrap();
-    let height: u32 = height.trim().parse().unwrap_or(default_height);
+    let height: u32 = height.trim().parse().unwrap_or(DEFAULT_HEIGHT); // 定数を使用
 
     (new_name, width, height)
 }
@@ -105,7 +118,7 @@ fn convert_to_webp(image_path: &Path, width: u32, height: u32) -> io::Result<Pat
     let output_path = output_dir.join(image_path.with_extension("webp").file_name().unwrap());
 
     let encoder = Encoder::from_image(&img).expect("Failed to create WebP encoder");
-    let webp = encoder.encode(65f32); // Quality factor: 65%
+    let webp = encoder.encode(WEBP_QUALITY); // 定数を使用
 
     // WebPMemory から Vec<u8> に変換
     let webp_data: Vec<u8> = webp.to_vec();
