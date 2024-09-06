@@ -5,14 +5,19 @@ use std::path::{Path, PathBuf};
 use webp::Encoder;
 use arboard::Clipboard;
 
-const DEFAULT_WIDTH: u32 = 640;
-const DEFAULT_HEIGHT: u32 = 480;
-const DOWNLOADS_DIR: &str = "Downloads";
-const WEBP_QUALITY: f32 = 65.0;
+// 調整するのはここから
 
+const DEFAULT_WIDTH: u32 = 640; // デフォルトの画像はば
+const DEFAULT_HEIGHT: u32 = 480; // でふぉるtの画像高さ
+const DOWNLOADS_DIR: &str = "Downloads"; // ダウンロードフォルダの指定
+const WEBP_QUALITY: f32 = 65.0; // WebP画像の品質
+
+// ここのformat形式をあなたのレポジトリに合わせたらそのまままmdに貼れます
 fn generate_github_url(image_name: &str, width: &str, height: &str) -> String {
     format!("![{name}](https://raw.githubusercontent.com/shunkat/image-resize-convert-uploader/master/{width}_{height}/{name}.webp)", name = image_name, width = width, height = height)
 }
+
+// 調整するのはここまで
 
 fn main() -> io::Result<()> {
     println!("ダウンロードフォルダから最新の画像を検索中...");
