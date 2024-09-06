@@ -5,4 +5,3 @@ Rustを使って、画像のサイズ変更、webpへの変換、githubへのア
 # 使い方
 1. Rustの環境構築
 
-![test-high-definition](https://raw.githubusercontent.com/shunkat/image-resize-convert-uploader/master/640_480/test-high-definition.webp)
