@@ -112,7 +112,7 @@ fn resize_image(image_path: &Path, width: u32, height: u32, new_name: &str) -> i
     let resized = img.resize(width, height, image::imageops::FilterType::Triangle);
 
     // 新しいファイル名に new_name を使用して保存する
-    let output_file_name = format!("{}_resized.png", new_name);
+    let output_file_name = format!("{}.png", new_name);
 
     // 画像が保存されるパスを作成する
     let output_path = image_path.with_file_name(output_file_name);
