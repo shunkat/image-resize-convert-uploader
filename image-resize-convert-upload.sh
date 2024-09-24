@@ -5,6 +5,6 @@ cd $path
 ./target/debug/image-resize-convert-uploader
 
 # githubにpushするならコメントアウト解除して
-# git add .
-# git commit -m "画像追加"
-# git push origin master
+git add .
+git commit -m "画像追加"
+git push origin master
