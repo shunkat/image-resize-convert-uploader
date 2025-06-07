@@ -1,5 +1,5 @@
 # このディレクトリが置いてある場所を指定して
-path="/Users/user/Develop/image-resize-convert-uploader/"
+path="/Users/jr/cli/image-resize-convert-uploader/"
 
 cd $path
 ./target/debug/image-resize-convert-uploader
